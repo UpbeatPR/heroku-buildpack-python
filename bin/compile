@@ -208,6 +208,8 @@ sub-env $BIN_DIR/steps/geo-libs
 source $BIN_DIR/steps/gdal
 
 # Install dependencies with Pip.
+# Hack to install everything to miniconda
+export PYTHONPATH=/app/.heroku/miniconda/lib/python2.7/site-packages:/app/:$PYTHONPATH
 source $BIN_DIR/steps/pip-install
 
 # Django collectstatic support.
