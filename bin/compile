@@ -209,7 +209,11 @@ source $BIN_DIR/steps/gdal
 
 # Install dependencies with Pip.
 # Hack to install everything to miniconda
-export PYTHONPATH=/app/.heroku/miniconda/lib/python2.7/site-packages:/app/:$PYTHONPATH
+# Dir will change based on python version
+CONDA_ENV_NAME=`cat runtime.txt`
+MINICONDA_DIR="/app/.heroku/miniconda"
+SITE_PACKAGES_DIR="$(ls -d1 $MINICONDA_DIR/envs/$CONDA_ENV_NAME/lib/*/ | grep -e "python\d\.\d/$")site-packages"
+export PYTHONPATH="$SITE_PACKAGES_DIR:/app/:$PYTHONPATH"
 source $BIN_DIR/steps/pip-install
 
 # Django collectstatic support.
@@ -221,7 +225,7 @@ set-env PATH '$HOME/.heroku/python/bin:$PATH'
 set-env PYTHONUNBUFFERED true
 set-env PYTHONHOME /app/.heroku/python
 set-env LIBRARY_PATH '/app/.heroku/vendor/lib:/app/.heroku/python/lib:$LIBRARY_PATH'
-set-env LD_LIBRARY_PATH '/app/.heroku/miniconda/lib/:/app/.heroku/vendor/lib:/app/.heroku/python/lib:$LD_LIBRARY_PATH'
+set-env LD_LIBRARY_PATH '$MINICONDA_DIR/lib/:/app/.heroku/vendor/lib:/app/.heroku/python/lib:$LD_LIBRARY_PATH'
 set-default-env LANG en_US.UTF-8
 set-default-env PYTHONHASHSEED random
 set-default-env PYTHONPATH /app/
