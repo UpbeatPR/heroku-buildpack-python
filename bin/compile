@@ -155,6 +155,10 @@ if [ ! -f runtime.txt ]; then
   echo $DEFAULT_PYTHON_VERSION > runtime.txt
 fi
 
+CONDA_ENV_NAME=`cat runtime.txt`
+export PATH="/app/.heroku/miniconda/bin:$PATH"
+source activate $CONDA_ENV_NAME
+
 # Prepare the cache.
 mkdir -p $CACHE_DIR
 
@@ -184,10 +188,12 @@ set -e
 mkdir -p $(dirname $PROFILE_PATH)
 
 # Install Python.
-source $BIN_DIR/steps/python
+#source $BIN_DIR/steps/python
 
 # Sanity check for setuptools/distribute.
 source $BIN_DIR/steps/setuptools
+
+
 
 # Uninstall removed dependencies with Pip.
 source $BIN_DIR/steps/pip-uninstall
