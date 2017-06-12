@@ -222,7 +222,9 @@ CONDA_ENV_NAME=$PYTHON_VERSION
 # E.g. `3.6.1`
 PYTHON_VERSION_NUMBER=`echo $PYTHON_VERSION | cut -d \- -f 2`
 MINICONDA_DIR="/app/.heroku/miniconda"
-SITE_PACKAGES_DIR="/app/.heroku/miniconda/envs/$CONDA_ENV_NAME/lib/python$(echo $PYTHON_VERSION_NUMBER | cut -d '.' -f-2)/site-packages"
+CONDA_PYTHON_HOME_DIR="/app/.heroku/miniconda/envs/$CONDA_ENV_NAME/lib/python$(echo $PYTHON_VERSION_NUMBER | cut -d '.' -f-2)"
+SITE_PACKAGES_DIR="$PYTHON_HOME_DIR/site-packages"
+
 export PYTHONPATH="$SITE_PACKAGES_DIR:/app/:$PYTHONPATH"
 source $BIN_DIR/steps/pip-install
 
@@ -233,9 +235,9 @@ sub-env $BIN_DIR/steps/collectstatic
 # Create .profile script for application runtime environment variables.
 set-env PATH "\$HOME/.heroku/miniconda/envs/$CONDA_ENV_NAME/bin:\$PATH"
 set-env PYTHONUNBUFFERED true
-set-env PYTHONHOME "/app/.heroku/miniconda/envs/$CONDA_ENV_NAME/lib/python$(echo $PYTHON_VERSION_NUMBER | cut -d '.' -f-2)"
-set-env LIBRARY_PATH "/app/.heroku/vendor/lib:$MINICONDA_DIR/lib:\$LIBRARY_PATH'"
-set-env LD_LIBRARY_PATH "$MINICONDA_DIR/lib/:/app/.heroku/vendor/lib:/app/.heroku/python/lib:\$LD_LIBRARY_PATH"
+set-env PYTHONHOME $PYTHON_HOME_DIR
+set-env LIBRARY_PATH "/app/.heroku/vendor/lib:$CONDA_PYTHON_HOME_DIR/lib:\$LIBRARY_PATH"
+set-env LD_LIBRARY_PATH "$CONDA_PYTHON_HOME_DIR/lib/:/app/.heroku/vendor/lib:/app/.heroku/python/lib:\$LD_LIBRARY_PATH"
 set-default-env LANG en_US.UTF-8
 set-default-env PYTHONHASHSEED random
 set-default-env PYTHONPATH /app/
