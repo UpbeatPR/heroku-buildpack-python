@@ -109,7 +109,7 @@ GUNICORN_PROFILE_PATH="$BUILD_DIR/.profile.d/python.gunicorn.sh"
 export BUILD_DIR CACHE_DIR BIN_DIR PROFILE_PATH
 
 # Prepend proper environment variables for Python use.
-export PATH=$BUILD_DIR/.heroku/python/bin:$BUILD_DIR/.heroku/vendor/bin:$PATH
+export PATH=/app/.heroku/miniconda/bin:$BUILD_DIR/.heroku/python/bin:$BUILD_DIR/.heroku/vendor/bin:$PATH
 export PYTHONUNBUFFERED=1
 export LANG=en_US.UTF-8
 export C_INCLUDE_PATH=/app/.heroku/vendor/include:$BUILD_DIR/.heroku/vendor/include:/app/.heroku/python/include:$C_INCLUDE_PATH
