@@ -155,7 +155,7 @@ if [ ! -f runtime.txt ]; then
   echo $DEFAULT_PYTHON_VERSION > runtime.txt
 fi
 
-CONDA_ENV_NAME=`cat runtime.txt`
+export CONDA_ENV_NAME=`cat runtime.txt`
 export PATH="/app/.heroku/miniconda/bin:$PATH"
 source activate $CONDA_ENV_NAME
 
@@ -188,7 +188,7 @@ set -e
 mkdir -p $(dirname $PROFILE_PATH)
 
 # Install Python.
-#source $BIN_DIR/steps/python
+source $BIN_DIR/steps/python
 
 # Sanity check for setuptools/distribute.
 source $BIN_DIR/steps/setuptools
@@ -231,7 +231,7 @@ sub-env $BIN_DIR/steps/collectstatic
 
 
 # Create .profile script for application runtime environment variables.
-set-env PATH '$HOME/.heroku/miniconda/envs/$CONDA_ENV_NAME/bin:$PATH'
+set-env PATH "\$HOME/.heroku/miniconda/envs/$CONDA_ENV_NAME/bin:\$PATH"
 set-env PYTHONUNBUFFERED true
 set-env PYTHONHOME "/app/.heroku/miniconda/envs/$CONDA_ENV_NAME/lib/python$(echo $PYTHON_VERSION_NUMBER | cut -d '.' -f-2)"
 set-env LIBRARY_PATH '/app/.heroku/vendor/lib:$MINICONDA_DIR/lib:$LIBRARY_PATH'
