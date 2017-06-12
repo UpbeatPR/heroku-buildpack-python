@@ -210,9 +210,13 @@ source $BIN_DIR/steps/gdal
 # Install dependencies with Pip.
 # Hack to install everything to miniconda
 # Dir will change based on python version
-CONDA_ENV_NAME=`cat runtime.txt`
+PYTHON_VERSION=$(cat runtime.txt)
+CONDA_ENV_NAME=$PYTHON_VERSION
+
+# E.g. `3.6.1`
+PYTHON_VERSION_NUMBER=`echo $PYTHON_VERSION | cut -d \- -f 2`
 MINICONDA_DIR="/app/.heroku/miniconda"
-SITE_PACKAGES_DIR="$(ls -d1 $MINICONDA_DIR/envs/$CONDA_ENV_NAME/lib/*/ | grep -e "python\d\.\d/$")site-packages"
+SITE_PACKAGES_DIR="/app/.heroku/miniconda/envs/$CONDA_ENV_NAME/lib/python$(echo $PYTHON_VERSION_NUMBER | cut -d '.' -f-2)/site-packages"
 export PYTHONPATH="$SITE_PACKAGES_DIR:/app/:$PYTHONPATH"
 source $BIN_DIR/steps/pip-install
 
