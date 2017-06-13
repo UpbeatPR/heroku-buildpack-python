@@ -224,7 +224,7 @@ PYTHON_VERSION_NUMBER=`echo $PYTHON_VERSION | cut -d \- -f 2`
 
 # Paths pertaining to the base miniconda installation.
 MINICONDA_DIR="/app/.heroku/miniconda"
-MINICONDA_PYTHONHOME="/app/.heroku/miniconda/lib/$(echo $PYTHON_VERSION_NUMBER | cut -d '.' -f-2)"
+MINICONDA_PYTHONHOME="/app/.heroku/miniconda/lib/python$(echo $PYTHON_VERSION_NUMBER | cut -d '.' -f-2)"
 
 # Paths pertaining to the Conda environment to use for application runtime.
 CONDA_ENV_DIR="$MINICONDA_DIR/envs/$CONDA_ENV_NAME"
@@ -241,9 +241,8 @@ sub-env $BIN_DIR/steps/collectstatic
 # These will use the conda Python without activating the actual environment.
 set-env PATH "$MINICONDA_DIR/bin:\$PATH"
 set-env PYTHONUNBUFFERED true
-set-env PYTHONHOME $MINICONDA_PYTHONHOME
 set-env LIBRARY_PATH "/app/.heroku/vendor/lib:$MINICONDA_DIR/lib:\$LIBRARY_PATH"
-set-env LD_LIBRARY_PATH "$MINICONDA_DIR/lib/:/app/.heroku/vendor/lib:/app/.heroku/python/lib:\$LD_LIBRARY_PATH"
+set-env LD_LIBRARY_PATH "$MINICONDA_DIR/lib:/app/.heroku/vendor/lib:/app/.heroku/python/lib:\$LD_LIBRARY_PATH"
 set-default-env LANG en_US.UTF-8
 set-default-env PYTHONHASHSEED random
 set-default-env PYTHONPATH /app/
