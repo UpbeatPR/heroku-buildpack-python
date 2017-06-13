@@ -223,7 +223,6 @@ sub-env $BIN_DIR/steps/collectstatic
 
 # Create .profile script for application runtime environment variables.
 MINICONDA_DIR="/app/.heroku/miniconda"
-set-env PATH "$MINICONDA_DIR/bin:\$PATH"
 set-env PYTHONUNBUFFERED true
 set-env LIBRARY_PATH "/app/.heroku/vendor/lib:$MINICONDA_DIR/lib:\$LIBRARY_PATH"
 set-env LD_LIBRARY_PATH "$MINICONDA_DIR/lib:/app/.heroku/vendor/lib:/app/.heroku/python/lib:\$LD_LIBRARY_PATH"
