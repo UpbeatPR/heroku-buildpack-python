@@ -221,11 +221,16 @@ CONDA_ENV_NAME=$PYTHON_VERSION
 
 # E.g. `3.6.1`
 PYTHON_VERSION_NUMBER=`echo $PYTHON_VERSION | cut -d \- -f 2`
-MINICONDA_DIR="/app/.heroku/miniconda"
-CONDA_PYTHON_HOME_DIR="/app/.heroku/miniconda/envs/$CONDA_ENV_NAME/lib/python$(echo $PYTHON_VERSION_NUMBER | cut -d '.' -f-2)"
-SITE_PACKAGES_DIR="$PYTHON_HOME_DIR/site-packages"
 
-export PYTHONPATH="$SITE_PACKAGES_DIR:/app/:$PYTHONPATH"
+# Paths pertaining to the base miniconda installation.
+MINICONDA_DIR="/app/.heroku/miniconda"
+MINICONDA_PYTHONHOME="/app/.heroku/miniconda/lib/$(echo $PYTHON_VERSION_NUMBER | cut -d '.' -f-2)"
+
+# Paths pertaining to the Conda environment to use for application runtime.
+CONDA_ENV_DIR="$MINICONDA_DIR/envs/$CONDA_ENV_NAME"
+CONDA_ENV_PYTHONHOME="$CONDA_ENV_DIR/lib/$(echo $PYTHON_VERSION_NUMBER | cut -d '.' -f-2)"
+
+export PYTHONPATH="$CONDA_ENV_PYTHONHOME/site-packages:/app/:$PYTHONPATH"
 source $BIN_DIR/steps/pip-install
 
 # Django collectstatic support.
@@ -233,11 +238,12 @@ sub-env $BIN_DIR/steps/collectstatic
 
 
 # Create .profile script for application runtime environment variables.
-set-env PATH "\$HOME/.heroku/miniconda/envs/$CONDA_ENV_NAME/bin:\$PATH"
+# These will use the conda Python without activating the actual environment.
+set-env PATH "$MINICONDA_DIR/bin:\$PATH"
 set-env PYTHONUNBUFFERED true
-set-env PYTHONHOME $PYTHON_HOME_DIR
-set-env LIBRARY_PATH "/app/.heroku/vendor/lib:$CONDA_PYTHON_HOME_DIR/lib:\$LIBRARY_PATH"
-set-env LD_LIBRARY_PATH "$CONDA_PYTHON_HOME_DIR/lib/:/app/.heroku/vendor/lib:/app/.heroku/python/lib:\$LD_LIBRARY_PATH"
+set-env PYTHONHOME $MINICONDA_PYTHONHOME
+set-env LIBRARY_PATH "/app/.heroku/vendor/lib:$MINICONDA_DIR/lib:\$LIBRARY_PATH"
+set-env LD_LIBRARY_PATH "$MINICONDA_DIR/lib/:/app/.heroku/vendor/lib:/app/.heroku/python/lib:\$LD_LIBRARY_PATH"
 set-default-env LANG en_US.UTF-8
 set-default-env PYTHONHASHSEED random
 set-default-env PYTHONPATH /app/
